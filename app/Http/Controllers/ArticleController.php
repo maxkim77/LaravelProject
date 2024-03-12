@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\DeleteArticleRequest;
+use App\Http\Requests\EditArticleRequest;
 use App\Models\Article;
 use Illuminate\Http\Request;
+use App\Http\Requests\CreateArticleRequest;
+use App\Http\Requests\UpdateArticleRequest;
 
 class ArticleController extends Controller
 {
@@ -27,11 +31,9 @@ class ArticleController extends Controller
         return view('articles.create');
     }
 
-    public function store(Request $request)
+    public function store(CreateArticleRequest $request)
 {
-    $validatedData = $request->validate([
-        'body' => 'required|string|max:255',
-    ]);
+    $validatedData = $request->validated();
 
     $article = Article::create([
         'body' => $validatedData['body'],
@@ -51,23 +53,21 @@ class ArticleController extends Controller
         return view('articles.show', compact('article'));
     }
 
-    public function edit(Article $article)
+    public function edit(EditArticleRequest $request, Article $article)
     {
         return view('articles.edit', compact('article'));
     }
 
-    public function update(Request $request, Article $article)
+    public function update(UpdateArticleRequest $request, Article $article)
     {
-        $validatedData = $request->validate([
-            'body' => 'required|string|max:255',
-        ]);
+        $validatedData = $request->validated();
 
         $article->update($validatedData);
 
         return redirect()->route('articles.show', ['article' => $article->id]);
     }
 
-    public function destroy(Article $article)
+    public function destroy(DeleteArticleRequest $request, Article $article)
     {
         $article->delete();
         return redirect()->route('articles.index');
