@@ -29,7 +29,14 @@ class CommentController extends Controller
      */
     public function store(StoreCommentRequest $request)
     {
-        //
+        $input = $request -> validated();
+
+        Comment::create([
+         'article_id' => $input['article_id'],
+         'user_id' => $request->user()->id,
+         'body' => $input['body'],
+        ]);
+        return redirect()->route('articles.show', ['article' => $request->article_id]);
     }
 
     /**

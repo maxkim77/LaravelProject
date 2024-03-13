@@ -11,7 +11,7 @@ class StoreCommentRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,6 +23,8 @@ class StoreCommentRequest extends FormRequest
     {
         return [
             //
+            'body' => 'string',
+            'article_id' => 'integer'
         ];
     }
 }

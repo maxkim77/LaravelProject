@@ -4,8 +4,7 @@
             글 목록
         </h2>
     </x-slot>
-    
-    <div class="container p-5">
+    <div class="container p-5 mx-auto">
         @foreach($articles as $article)
             <div class="background-white border rounded mb-3 p-3">
                 <p>{{ $article->body }}</p>
@@ -16,20 +15,11 @@
                         {{ $article->created_at->diffForHumans() }}
                     </a>
                 </p>
-                <!-- 수정 및 삭제 버튼 -->
-                <div class="flex flex-row">
-                    @can('update', $article)
-                    <a class="button rounded bg-blue-500 px-4 py-2 py-1 text-white" href="{{ route('articles.edit', ['article' => $article->id]) }}">수정하기</a>
-                    <form action="{{ route('articles.destroy', ['article' => $article->id]) }}" method="post">
-                        @csrf
-                        @method('DELETE')
-                        <button class="button rounded bg-red-500 px-4 py-2 py-1 text-white" type="submit">삭제하기</button>
-                    </form>
-                    @endcanany
-                </div>
+                <!-- 수정 및 삭제 버튼 --> 
+                <x-article-button-group :article="$article" />
             </div>
-        @endforeach
-    </div>
+            @endforeach
+        </div>
     
     <div class="container p-5">
         {{ $articles->links() }}

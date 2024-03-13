@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\CommentController;
 use Illuminate\Support\Facades\Route;
 
 // Home page route
@@ -35,3 +36,4 @@ require __DIR__.'/auth.php';
 //     Route::delete('/articles/{article}', [ArticleController::class, 'destroy'])->name('articles.destroy');
 
 Route::resource('articles', ArticleController::class);
+Route::resource('comments', CommentController::class)->only(['store', 'destroy']);
