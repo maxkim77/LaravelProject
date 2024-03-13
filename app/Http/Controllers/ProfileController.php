@@ -8,9 +8,23 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use Illuminate\Support\Carbon;
+use App\Models\User;
 
 class ProfileController extends Controller
 {
+    public function show(User $user): View
+    {
+        $user->load('articles');
+        $user->articles->loadCount('comments');
+        $user->articles->loadExists(['comments as comments_count' => function ($query) {
+            $query->where('created_at', '>', Carbon::now()->subDays());
+        }]);
+
+        return view('profile.show', [
+            'user' => $user,
+    ]);
+    }
     /**
      * Display the user's profile form.
      */

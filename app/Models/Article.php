@@ -20,6 +20,7 @@ class Article extends Model
     {
         return $this->hasMany(Comment::class);
     } 
+    protected $with = ['user'];
     protected $withCount = ['comments'];
     public function getRecentCommentsExistsAttribute()
     {
@@ -30,5 +31,6 @@ class Article extends Model
     
         return $recentCommentsCount > 0;
     }
+
     
 }
