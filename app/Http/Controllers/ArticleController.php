@@ -8,6 +8,7 @@ use App\Models\Article;
 use Illuminate\Http\Request;
 use App\Http\Requests\CreateArticleRequest;
 use App\Http\Requests\UpdateArticleRequest;
+use Illuminate\Support\Carbon;
 
 class ArticleController extends Controller
 {
@@ -20,8 +21,18 @@ class ArticleController extends Controller
 
     public function index(Request $request)
     {
-        $perPage = $request->input('perpage', 10);
-        $articles = Article::with('user')->latest()->paginate($perPage);
+        $articles = Article::with('user')
+        ->with('comments')
+        ->withExists([
+            'comments as comments_count' => function ($query) {
+                $query->where('created_at', '>=', Carbon::now()->subDays(7));
+            }
+        
+        ])
+        ->latest()
+        ->paginate();
+        $perPage = 10;
+        $perPage = $request->input('perpage', $perPage);
         $totalCount = Article::count();
         return view('articles.index', compact('articles', 'perPage', 'totalCount'));
     }
@@ -51,6 +62,7 @@ class ArticleController extends Controller
     public function show(Article $article)
     {
         $article->load('comments.user');
+        $article->loadCount('comments');
         return view('articles.show', compact('article'));
     }
 

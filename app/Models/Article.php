@@ -20,4 +20,15 @@ class Article extends Model
     {
         return $this->hasMany(Comment::class);
     } 
+    protected $withCount = ['comments'];
+    public function getRecentCommentsExistsAttribute()
+    {
+        // 최근 일주일 동안의 댓글이 있는지 확인합니다.
+        $recentCommentsCount = $this->comments()
+            ->where('created_at', '>=', now()->subDays(7))
+            ->count();
+    
+        return $recentCommentsCount > 0;
+    }
+    
 }

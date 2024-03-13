@@ -3,8 +3,11 @@
             <div class="background-white border rounded mb-3 p-3">
                 <p>{{ $article->body }}</p>
                 <p class="text-sm text-gray">{{ $article->user->name}} {{ $article->created_at->toDateTimeString() }}</p>
+                <p class="text-sm text-gray">{{ $article->comments_count }}개의 댓글</p>
+                
                 <x-article-button-group :article="$article" />
     </div>
+
 
     <h2 class="text-lg font-bold">댓글</h2>
      <div class = "mt-3">
