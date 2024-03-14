@@ -1,7 +1,7 @@
 <div class="background-white border rounded mb-3 p-3">
                 <p>{{ $article->body }}</p>
                 <p>
-                <a href = "{{ route('profile', ['user' => $article -> user -> id]) }}">{{$article -> user -> name}}</a> 
+                <a href = "{{ route('profile', ['user' => $article -> user -> username]) }}">{{$article -> user -> name}}</a> 
                 </p>
                 <!-- 글조회 -->
                 <p class="text-xs text-gray-500">
