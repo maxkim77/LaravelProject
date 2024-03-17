@@ -3,7 +3,7 @@
         <div class="flex justify-between h-16">
             <div class="flex items-center">
                 <!-- Logo -->
-                <a href="{{ route('dashboard') }}" class="flex-shrink-0">
+                <a href="{{ route('home') }}" class="flex-shrink-0">
                     <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
                 </a>
 

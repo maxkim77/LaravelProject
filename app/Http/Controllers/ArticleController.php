@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\CreateArticleRequest;
 use App\Http\Requests\UpdateArticleRequest;
 use Illuminate\Support\Carbon;
+use Illuminate\Database\Eloquent\Builder; // 필요한 경우 Builder 클래스를 import 합니다.
 
 class ArticleController extends Controller
 {
@@ -21,19 +22,29 @@ class ArticleController extends Controller
 
     public function index(Request $request)
     {
+        // 요청에서 검색 쿼리 매개변수 'q'를 가져옵니다.
+        $q = $request->input('q');
+
         $articles = Article::with('user')
-        ->with('comments')
-        ->withExists([
-            'comments as comments_count' => function ($query) {
-                $query->where('created_at', '>=', Carbon::now()->subDays(7));
-            }
-        
-        ])
-        ->latest()
-        ->paginate();
+            ->with('comments')
+            ->withExists([
+                'comments as comments_count' => function ($query) {
+                    $query->where('created_at', '>=', Carbon::now()->subDays(7));
+                }
+            ])
+            ->when($q, function ($query) use ($q) { // 클로저 함수 내에서 $query의 타입을 올바르게 지정합니다.
+                $query->where('body', 'like', '%' . $q . '%')
+                    ->orWhereHas('user', function (Builder $query) use ($q) { // Builder 클래스를 사용합니다.
+                        $query->where('name', 'like', '%' . $q . '%');
+                    });
+            })
+            ->latest()
+            ->paginate();
+
         $perPage = 10;
         $perPage = $request->input('perpage', $perPage);
         $totalCount = Article::count();
+
         return view('articles.index', compact('articles', 'perPage', 'totalCount'));
     }
 
